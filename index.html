@@ -1,0 +1,36 @@
+import "./styles.css";
+
+const separator = "&nbsp;&#8226;&nbsp;";
+
+async function fetchMarquee() {
+  const marqueeArr = await fetch(
+    "https://raw.githubusercontent.com/marcusmolchany/marquee/master/marquee.json?flush_cache=True"
+  )
+    .then((res) => res.json())
+    .then((data) => data.data);
+  const marqueeString = marqueeArr.join(separator);
+
+  return marqueeString;
+}
+
+function updateMarquee(str) {
+  document.getElementById(
+    "app"
+  ).innerHTML = `<h1>${str}${separator}${str}${separator}${str}</h1>`;
+}
+
+function pollMarquee() {
+  setInterval(async () => {
+    console.log("updating marquee!");
+    const marqueeString = await fetchMarquee();
+    updateMarquee(marqueeString);
+  }, 60000);
+}
+
+async function main() {
+  const marqueeString = await fetchMarquee();
+  updateMarquee(marqueeString);
+  pollMarquee();
+}
+
+main();
